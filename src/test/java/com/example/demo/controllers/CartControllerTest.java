@@ -88,6 +88,17 @@ public class CartControllerTest {
 
     }
 
+    @Test
+    public void removeFromCartItemNotFound() {
+
+        modifyCartRequest.setItemId(2L);
+        ResponseEntity<Cart> response = cartController.removeFromCart(modifyCartRequest);
+
+        assertNotNull(response);
+        assertEquals(404, response.getStatusCodeValue());
+
+    }
+
 
 
 
