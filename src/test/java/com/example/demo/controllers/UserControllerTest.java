@@ -1,12 +1,14 @@
 package com.example.demo.controllers;
 
-import com.example.demo.TestUtils;
 import com.example.demo.model.persistence.User;
 import com.example.demo.model.persistence.repositories.CartRepository;
 import com.example.demo.model.persistence.repositories.UserRepository;
 import com.example.demo.model.requests.CreateUserRequest;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -14,30 +16,29 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class UserControllerTest {
 
-    private UserController userController;
+    @InjectMocks
+    UserController userController;
 
-    private UserRepository userRepository = mock(UserRepository.class);
+    @Mock
+    UserRepository userRepository;
 
-    private CartRepository cartRepository = mock(CartRepository.class);
+    @Mock
+    CartRepository cartRepository;
 
-    private BCryptPasswordEncoder bCryptPasswordEncoder = mock(BCryptPasswordEncoder.class);
+    @Mock
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private CreateUserRequest createUserRequest;
-
     private User user;
 
     @Before
     public void setUp() {
 
-        userController = new UserController();
-        TestUtils.injectObjects(userController, "userRepository", userRepository);
-        TestUtils.injectObjects(userController, "cartRepository", cartRepository);
-        TestUtils.injectObjects(userController, "bCryptPasswordEncoder", bCryptPasswordEncoder);
+        MockitoAnnotations.initMocks(this);
 
         createUserRequest = new CreateUserRequest();
         createUserRequest.setUsername("test");
