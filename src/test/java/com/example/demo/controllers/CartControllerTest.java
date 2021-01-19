@@ -15,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
@@ -57,7 +58,7 @@ public class CartControllerTest {
         modifyCartRequest.setQuantity(1);
 
         when(userRepository.findByUsername("testUser")).thenReturn(user);
-        when(itemRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(item));
+        when(itemRepository.findById(1L)).thenReturn(Optional.ofNullable(item));
     }
 
     @Test
