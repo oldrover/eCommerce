@@ -1,9 +1,6 @@
 package com.example.demo.controllers;
 
-import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,7 +21,7 @@ import com.example.demo.model.requests.CreateUserRequest;
 @RequestMapping("/api/user")
 public class UserController {
 
-	public static final Logger log = LoggerFactory.getLogger(UserController.class);
+	public static final Logger log = Logger.getLogger(UserController.class);
 
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -50,11 +47,11 @@ public class UserController {
 	public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) {
 		User user = new User();
 		user.setUsername(createUserRequest.getUsername());
-		log.info("Creating user with username {}... ", createUserRequest.getUsername());
+		log.info("Creating user with username " + createUserRequest.getUsername() + "...");
 		Cart cart = new Cart();
 
 		if(createUserRequest.getPassword().length() < 7 || !createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())) {
-			log.error("Error with user password. Cannot create user {}!", createUserRequest.getUsername());
+			log.error("Error with user password. Unable to create user " + createUserRequest.getUsername() + "!");
 			return ResponseEntity.badRequest().build();
 		}
 
@@ -63,7 +60,8 @@ public class UserController {
 		userRepository.save(user);
 		cartRepository.save(cart);
 
-		log.info("User {} was successfully created.", createUserRequest.getUsername());
+		log.info("User " + createUserRequest.getUsername() + " was successfully created.");
+
 		return ResponseEntity.ok(user);
 	}
 	
