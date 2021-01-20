@@ -16,7 +16,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class UserControllerTest {
 
@@ -49,15 +49,11 @@ public class UserControllerTest {
         user.setId(1L);
         user.setUsername("testUser");
         user.setPassword("testPassword");
-
-        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
-        when(userRepository.findByUsername("testUser")).thenReturn(user);
-        when(bCryptPasswordEncoder.encode("testPassword")).thenReturn("ThisIsHashed");
-
     }
 
     @Test
-    public void createUserSuccess() {
+    public void testCreateUserSuccess() {
+        when(bCryptPasswordEncoder.encode(anyString())).thenReturn("ThisIsHashed");
 
         ResponseEntity<User> response = userController.createUser(createUserRequest);
 
@@ -65,6 +61,7 @@ public class UserControllerTest {
         assertEquals(200, response.getStatusCodeValue());
 
         User responseUser = response.getBody();
+
         assertNotNull(responseUser);
         assertEquals(0, responseUser.getId());
         assertEquals("test", responseUser.getUsername());
@@ -73,9 +70,9 @@ public class UserControllerTest {
     }
 
     @Test
-    public void createUserWithPasswordError() {
-
+    public void testCreateUserError() {
         createUserRequest.setConfirmPassword("wrong");
+
         ResponseEntity<User> response = userController.createUser(createUserRequest);
 
         assertNotNull(response);
@@ -84,16 +81,22 @@ public class UserControllerTest {
     }
 
     @Test
-    public void findUserById() {
+    public void testFindUserById() {
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
+
         User responseUser = userController.findById(Long.valueOf(1L)).getBody();
+
         assertNotNull(responseUser);
         assertEquals(user, responseUser);
 
     }
 
     @Test
-    public void findUserByName() {
+    public void testFindUserByName() {
+        when(userRepository.findByUsername("testUser")).thenReturn(user);
+
         User responseUser = userController.findByUserName("testUser").getBody();
+
         assertNotNull(responseUser);
         assertEquals(user, responseUser);
     }
