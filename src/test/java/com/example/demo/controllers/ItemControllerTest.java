@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class ItemControllerTest {
 
@@ -34,28 +34,28 @@ public class ItemControllerTest {
         item = new Item();
         item.setId(1L);
         item.setName("testItem");
-
-        when(itemRepository.findById(1L)).thenReturn(Optional.ofNullable(item));
-        when(itemRepository.findByName("testItem")).thenReturn(Collections.singletonList(item));
     }
 
     @Test
-    public void getItemByIdSuccess() {
+    public void testGetItemByIdSuccess() {
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
+
         ResponseEntity<Item> response = itemController.getItemById(1L);
+
         assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(item, response.getBody());
-
     }
 
     @Test
-    public void getItemByNameSuccess() {
+    public void testGetItemByNameSuccess() {
+        when(itemRepository.findByName(anyString())).thenReturn(Collections.singletonList(item));
+
         ResponseEntity<List<Item>> response = itemController.getItemsByName("testItem");
+
         assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
         assertTrue(response.getBody().contains(item));
-
-
     }
 
 }
