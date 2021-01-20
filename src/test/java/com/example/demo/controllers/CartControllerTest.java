@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class CartControllerTest {
 
@@ -57,12 +57,13 @@ public class CartControllerTest {
         modifyCartRequest.setUsername("testUser");
         modifyCartRequest.setQuantity(1);
 
-        when(userRepository.findByUsername("testUser")).thenReturn(user);
-        when(itemRepository.findById(1L)).thenReturn(Optional.ofNullable(item));
+        when(userRepository.findByUsername(anyString())).thenReturn(user);
     }
 
     @Test
-    public void addToCartSuccess() {
+    public void testAddToCartSuccess() {
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
+
         ResponseEntity<Cart> response = cartController.addToCart(modifyCartRequest);
 
         assertNotNull(response);
@@ -75,7 +76,9 @@ public class CartControllerTest {
     }
 
     @Test
-    public void removeFromCartSuccess() {
+    public void testRemoveFromCartSuccess() {
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
+
         cartController.addToCart(modifyCartRequest);
         ResponseEntity<Cart> response = cartController.removeFromCart(modifyCartRequest);
 
@@ -89,9 +92,9 @@ public class CartControllerTest {
     }
 
     @Test
-    public void removeFromCartItemNotFound() {
+    public void testRemoveFromCartItemNotFound() {
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        modifyCartRequest.setItemId(2L);
         ResponseEntity<Cart> response = cartController.removeFromCart(modifyCartRequest);
 
         assertNotNull(response);
