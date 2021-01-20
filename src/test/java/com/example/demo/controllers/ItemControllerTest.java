@@ -58,4 +58,15 @@ public class ItemControllerTest {
         assertTrue(response.getBody().contains(item));
     }
 
+    @Test
+    public void testGetItems() {
+        when(itemRepository.findAll()).thenReturn(Collections.singletonList(item));
+
+        ResponseEntity<List<Item>> response = itemController.getItems();
+
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCodeValue());
+        assertTrue(response.getBody().contains(item));
+    }
+
 }
