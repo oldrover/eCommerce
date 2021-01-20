@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class OrderControllerTest {
 
@@ -54,39 +54,45 @@ public class OrderControllerTest {
         userOrder = new UserOrder();
         userOrder.setId(1L);
         userOrder.setUser(user);
-
-        when(userRepository.findByUsername("testUser")).thenReturn(user);
-        when(orderRepository.findByUser(user)).thenReturn(Collections.singletonList(userOrder));
-
     }
 
     @Test
-    public void submitOrderSuccess() {
+    public void testSubmitOrderSuccess() {
+        when(userRepository.findByUsername(anyString())).thenReturn(user);
+
         ResponseEntity<UserOrder> response = orderController.submit("testUser");
+
         assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
 
         UserOrder order = response.getBody();
+
         assertNotNull(order);
         assertEquals(user, order.getUser());
         assertTrue(order.getItems().contains(item));
     }
 
     @Test
-    public void getOrdersForUserSuccess() {
+    public void testGetOrdersForUserSuccess() {
+        when(userRepository.findByUsername(anyString())).thenReturn(user);
+        when(orderRepository.findByUser(user)).thenReturn(Collections.singletonList(userOrder));
+
         ResponseEntity<List<UserOrder>> response = orderController.getOrdersForUser("testUser");
+
         assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
 
         List<UserOrder> orderList = response.getBody();
+
         assertNotNull(orderList);
         assertTrue(orderList.contains(userOrder));
 
     }
 
     @Test
-    public void getOrdersForUserNotFound() {
+    public void testGetOrdersForUserNotFound() {
         ResponseEntity<List<UserOrder>> response = orderController.getOrdersForUser("notfound");
+
         assertNotNull(response);
         assertEquals(404, response.getStatusCodeValue());
 
